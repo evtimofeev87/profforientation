@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  postCategory   PostCategory? @relation(fields: [postCategoryId], references: [id])
+  postCategoryId String?
+  title          String
+  subtitle       String
+  timeToRead     Int
+  content        String
+  image          String
+}
+
+model PostCategory {
+  id    String @id @default(cuid())
+  title String
+  post  Post[]
+}
+
+model Profession {
+  id                   String                  @id @default(cuid())
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  title                String
+  salaryMax            Int
+  salaryMin            Int
+  difficulty           Int
+  description          String
+  example              String
+  image                String
+  skills               Skill[]
+  features             Feature[]
+  feeds                Feed[]
+  professionCategoryId String?
+  professionCategory   ProfessionCategory?     @relation(fields: [professionCategoryId], references: [id])
+  filterValues         ProfessionFilterValue[]
+}
+
+model Skill {
+  id           String     @id @default(cuid())
+  title        String
+  subtitle     String
+  professionId String
+  profession   Profession @relation(fields: [professionId], references: [id])
+}
+
+model Feature {
+  id String @id @default(cuid())
+
+  title        String
+  isPro        Boolean
+  professionId String?
+  profession   Profession? @relation(fields: [professionId], references: [id])
+}
+
+model Feed {
+  id             String      @id @default(cuid())
+  companyName    String
+  professionName String
+  monthsToLearn  Int
+  image          String
+  price          Int
+  discount       Int?
+  link           String
+  professionId   String?
+  profession     Profession? @relation(fields: [professionId], references: [id])
+  badgeId        String?
+  badgeBadge     FeedBadge?  @relation(fields: [badgeId], references: [id])
+  tags           FeedTag[]
+}
+
+model FeedBadge {
+  id    String @id @default(cuid())
+  feeds Feed[]
+  title String
+}
+
+model FeedTag {
+  id    String @id @default(cuid())
+  feeds Feed[]
+  title String
+}
+
+model ProfessionCategory {
+  id         String       @id @default(cuid())
+  title      String
+  filters    Filter[]
+  profession Profession[]
+}
+
+model Filter {
+  id                   String                  @id @default(cuid())
+  title                String
+  professionCategoryId String?
+  professionCategory   ProfessionCategory?     @relation(fields: [professionCategoryId], references: [id])
+  filterValues         ProfessionFilterValue[]
+  options              FilterOption[]
+  ProfQuestion         ProfQuestion[]
+}
+
+model FilterOption {
+  id           String                  @id @default(cuid())
+  title        String
+  filterId     String
+  filter       Filter                  @relation(fields: [filterId], references: [id])
+  filterValues ProfessionFilterValue[]
+  ProfOption   ProfOption[]
+}
+
+model ProfessionFilterValue {
+  id           String       @id @default(cuid())
+  professionId String
+  profession   Profession   @relation(fields: [professionId], references: [id])
+  filterId     String
+  filter       Filter       @relation(fields: [filterId], references: [id])
+  optionId     String
+  option       FilterOption @relation(fields: [optionId], references: [id])
+}
+
+model ProfQuestion {
+  id       String       @id @default(cuid())
+  filter   Filter       @relation(fields: [filterId], references: [id])
+  filterId String
+  title    String
+  priority Int
+  options  ProfOption[]
+}
+
+model ProfOption {
+  id             String       @id @default(cuid())
+  question       ProfQuestion @relation(fields: [questionId], references: [id])
+  questionId     String
+  filterOption   FilterOption @relation(fields: [filterOptionId], references: [id])
+  filterOptionId String
+  title          String
+  priority       Int
+}

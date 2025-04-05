@@ -1,0 +1,33 @@
+{
+    "name": "nuxt-app",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "pretty": "prettier --config .prettierrc --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json,vue}\""
+    },
+    "dependencies": {
+        "@as-integrations/h3": "^1.2.1",
+        "@element-plus/icons-vue": "^2.3.1",
+        "@element-plus/nuxt": "^1.1.1",
+        "@prisma/client": "^6.5.0",
+        "dompurify": "^3.2.4",
+        "element-plus": "^2.9.6",
+        "nuxt": "^3.15.4",
+        "nuxt-tiptap-editor": "^2.1.4",
+        "reflect-metadata": "^0.2.2",
+        "uuid": "^11.1.0",
+        "vue": "^3.5.13",
+        "vue-router": "^4.5.0"
+    },
+    "devDependencies": {
+        "@nuxtjs/tailwindcss": "^6.13.2",
+        "prettier": "^3.5.3",
+        "prisma": "^6.5.0",
+        "sass-embedded": "^1.85.1"
+    }
+}
