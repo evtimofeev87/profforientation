@@ -1,5 +1,6 @@
 <template>
     <div class="rounded-3xl bg-slate-100 p-6">
+        <p v-if="title" class="font-bold pb-4">{{ title }}</p>
         <div
             class="rounded-2xl border border-slate-200 mb-4 bg-white p-4"
             v-for="(item, index) in filtered"
@@ -17,6 +18,10 @@
 
 <script setup lang="ts">
 import { deleteSubentity } from '~/utils/common'
+
+defineProps<{
+    title?: string
+}>()
 
 const items = defineModel<Record<string, any>[]>()
 
