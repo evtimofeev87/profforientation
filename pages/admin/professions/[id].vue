@@ -1,45 +1,46 @@
 <template>
-    <div>
-        <el-form v-if="profession" label-width="auto" :model="profession!">
-            <el-form-item label="Заголовок">
-                <el-input v-model="profession.title" />
-            </el-form-item>
-            <el-form-item label="Описание профессии">
-                <el-input v-model="profession.description" />
-            </el-form-item>
-            <el-form-item label="Зарплата">
-                <el-input type="number" v-model.number="profession.salaryMin" />
-                <el-input type="number" v-model.number="profession.salaryMax" />
-            </el-form-item>
-            <el-form-item label="Сложность">
-                <el-input
-                    type="number"
-                    v-model.number="profession.difficulty"
-                />
-            </el-form-item>
-            <el-form-item label="Изображение">
-                <AdminUploadImage v-model="profession.image" />
-            </el-form-item>
-            <el-form-item label="Пример">
-                <el-input v-model="profession.example" />
-            </el-form-item>
-            <el-form-item>
-                <el-button @click="toProfessionsList">Отмена</el-button>
-                <el-button type="primary" @click="saveProfession">{{
-                    isNew ? 'Создать' : 'Сохранить'
-                }}</el-button>
-            </el-form-item>
-        </el-form>
-    </div>
+    <CommonFormLayout
+        :onCancel="toProfessionsList"
+        :onSave="saveProfession"
+        :saveLabel="isNew ? 'Создать' : 'Сохранить'"
+    >
+        <el-tabs v-model="activeTab">
+            <el-tab-pane label="Общее" name="form"
+                ><AdminFormsProfession v-model="profession!"
+            /></el-tab-pane>
+            <el-tab-pane label="Навыки" name="skills">
+                <CommonSubentityList>
+                    <template #default="{ item, deleteItem }"> </template>
+                    <template #addButton>
+                        <el-button @click="createSkill"
+                            >Добавить навык</el-button
+                        >
+                    </template>
+                </CommonSubentityList>
+            </el-tab-pane>
+            <el-tab-pane label="Плюсы/Минусы" name="features">Role</el-tab-pane>
+        </el-tabs>
+    </CommonFormLayout>
 </template>
 
 <script setup lang="ts">
 import { useProfessionEdit } from '~/composables/useProfessions'
+import { ref } from 'vue'
 
 definePageMeta({
     name: 'admin-professions-edit',
 })
 
-const { profession, saveProfession, toProfessionsList, isNew } =
-    await useProfessionEdit()
+const {
+    profession,
+    saveProfession,
+    toProfessionsList,
+    isNew,
+    createSkill,
+    createFeature,
+    plusFeatures,
+    minusFeatures,
+} = await useProfessionEdit()
+
+const activeTab = ref('form')
 </script>

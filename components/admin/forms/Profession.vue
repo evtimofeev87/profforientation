@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="auto" :model="profession!">
+    <el-form v-if="profession" label-width="auto" :model="profession!">
         <el-form-item label="Заголовок">
             <el-input v-model="profession.title" />
         </el-form-item>
@@ -19,15 +19,14 @@
         <el-form-item label="Пример">
             <el-input v-model="profession.example" />
         </el-form-item>
-        <el-form-item>
-            <el-button @click="toProfessionsList">Отмена</el-button>
-            <el-button type="primary" @click="onCreate">Создать</el-button>
-        </el-form-item>
     </el-form>
 </template>
 
 <script setup lang="ts">
-import { useCreateProfession } from '~/composables/useProfessions'
+import type {
+    CreateProfessionDTO,
+    UpdateProfessionDTO,
+} from '~/types/professions'
 
-const { profession, toProfessionsList, onCreate } = useCreateProfession()
+const profession = defineModel<CreateProfessionDTO | UpdateProfessionDTO>()
 </script>

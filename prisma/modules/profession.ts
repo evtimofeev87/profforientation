@@ -7,15 +7,43 @@ import type { SelectedFiltersList } from '~/types/filters'
 
 export const ProfessionModel = {
     create: async (profession: CreateProfessionDTO) => {
+        const { skills, features, ...professionData } = profession
+
+        const subEntities: Record<string, any> = {
+            ...(skills && {
+                skills: buildPrismaSubEntity(skills, ['professionId']),
+            }),
+            ...(features && {
+                features: buildPrismaSubEntity(features, ['professionId']),
+            }),
+        }
+
         return await prisma.profession.create({
-            data: profession,
+            data: {
+                ...professionData,
+                ...subEntities,
+            },
         })
     },
 
     update: async (id: string, profession: UpdateProfessionDTO) => {
+        const { skills, features, ...professionData } = profession
+
+        const subEntities: Record<string, any> = {
+            ...(skills && {
+                skills: buildPrismaSubEntity(skills, ['professionId']),
+            }),
+            ...(features && {
+                features: buildPrismaSubEntity(features, ['professionId']),
+            }),
+        }
+
         return await prisma.profession.update({
             where: { id },
-            data: profession,
+            data: {
+                ...professionData,
+                ...subEntities,
+            },
         })
     },
 
@@ -32,6 +60,10 @@ export const ProfessionModel = {
     }): Promise<UpdateProfessionDTO | null> => {
         return await prisma.profession.findFirst({
             where: { id },
+            include: {
+                skills: true,
+                features: true,
+            },
         })
     },
 

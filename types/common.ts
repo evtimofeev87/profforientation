@@ -16,11 +16,14 @@ export type Breadcrumb = {
     path: string
 }
 
-export type OmittedFields = 'id' | 'createdAt' | 'updatedAt' | 'deleted'
+export type OmittedFields = 'id' | 'createdAt' | 'updatedAt' | '_deleted'
 
 export type Pretty<T> = {
     [K in keyof T]: T[K]
 } & {}
 
 export type MakeCreate<T> = Pretty<Omit<T, OmittedFields>>
-export type MakeDeletable<T> = Pretty<T & { deleted?: true }>
+
+export type MakeUpdateSubEntity<T> = Pretty<T & { _deleted?: true }>
+
+export type MakeCreateSubEntity<T> = Pretty<MakeCreate<T> & { _tempId: string }>

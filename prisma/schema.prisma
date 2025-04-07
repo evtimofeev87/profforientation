@@ -63,7 +63,7 @@ model Feature {
   id String @id @default(cuid())
 
   title        String
-  isPro        Boolean
+  isPlus       Boolean
   professionId String?
   profession   Profession? @relation(fields: [professionId], references: [id])
 }

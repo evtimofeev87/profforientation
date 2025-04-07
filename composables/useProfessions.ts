@@ -1,9 +1,13 @@
 import type {
+    CreateFeatureDTO,
     CreateProfessionDTO,
+    CreateSkillDTO,
+    UpdateFeatureDTO,
     UpdateProfessionDTO,
 } from '~/types/professions'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
+import { createNewSubentity } from '~/utils/common'
 
 const useProfessionCommon = () => {
     const router = useRouter()
@@ -106,11 +110,60 @@ export const useProfessionEdit = async () => {
         }
     }
 
+    const createSkill = () => {
+        if (!profession.value) return
+        return (profession.value.skills ||= []).push(
+            createNewSubentity<CreateSkillDTO>()
+        )
+    }
+
+    const createFeature = (isPlus: boolean) => {
+        if (!profession.value) return
+        return (profession.value.features ||= []).push({
+            ...createNewSubentity<CreateFeatureDTO>(),
+            isPlus,
+        })
+    }
+
+    const plusFeatures = computed<(UpdateFeatureDTO | CreateFeatureDTO)[]>({
+        get: () => {
+            if (!profession.value || !profession.value.features) return []
+            return profession.value.features.filter((u) => u.isPlus)
+        },
+        set: (newFeature) => {
+            if (!profession.value) return []
+            profession.value.features ||= []
+            profession.value.features = [
+                ...profession.value.features.filter((u) => !u.isPlus),
+                ...newFeature.map((u) => ({ ...u, isPlus: true })),
+            ]
+        },
+    })
+
+    const minusFeatures = computed<(UpdateFeatureDTO | CreateFeatureDTO)[]>({
+        get: () => {
+            if (!profession.value || !profession.value.features) return []
+            return profession.value.features.filter((u) => !u.isPlus)
+        },
+        set: (newFeature) => {
+            if (!profession.value) return []
+            profession.value.features ||= []
+            profession.value.features = [
+                ...profession.value.features.filter((u) => u.isPlus),
+                ...newFeature.map((u) => ({ ...u, isPlus: false })),
+            ]
+        },
+    })
+
     return {
         profession,
         saveProfession,
         toProfessionsList,
         isNew,
+        createSkill,
+        createFeature,
+        plusFeatures,
+        minusFeatures,
     }
 }
 
